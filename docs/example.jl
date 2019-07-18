@@ -1,35 +1,27 @@
+using ROC
+using Random
+Random.seed!(123)
+
 ## GENERATE SYNTHETIC DATA:
-
-function noisy(label; λ=0.0)
-    if label
-        return 1 - λ*rand()
-    else
-        return λ*rand()
-    end
-end
-
 labels = rand(Bool, 200);
 
-scores(λ) = map(labels) do label
-    noisy(label, λ=λ)
-end
-
-## COMPARE AUC
-
-using ROC
-
-roc_good = roc(scores(0.6), labels, true);
-roc_bad = roc(scores(1.0), labels, true);
-area_good = AUC(roc_good)
-area_bad =  AUC(roc_bad)
+# function to add noise
+add_noise(label::Bool, λ=0.0) = label ? 1 - λ*rand() : λ*rand()
+# simulate good detector 
+good = add_noise.(labels, 0.6)
+# simulate bad detector 
+bad  = add_noise.(labels, 1.0)
 
 
-## PLOT THE ROC's
+roc_good = roc(good, labels, true);
+roc_bad = roc(bad, labels, true);
+println("AUC (good detector): $(AUC(roc_good)) ")
+println("AUC (bad  detector): $(AUC(roc_bad )) ")
 
 using Plots
-pyplot()
+gr()
 
-plot(roc_good, label="good");
-plot!(roc_bad, label="bad")
+p = plot(roc_good, label="good");
+plot!(p,roc_bad, label="bad")
 
 savefig("rocs.png")
