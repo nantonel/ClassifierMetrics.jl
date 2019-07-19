@@ -1,4 +1,5 @@
 name = "ClassifierMetrics"
+uuid = "e4f92426-8875-4712-a903-a153c75bec82"
 version = "0.1.0"
 
 [deps]
