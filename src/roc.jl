@@ -54,11 +54,6 @@ function roc_auc(FPR::Vector{T}, TPR::Vector{T}, OP::Vector{T}) where {T}
   return AUC
 end
 
-auc(roc::ROC) = roc.AUC
-fpr(roc::ROC) = roc.FPR
-tpr(roc::ROC) = roc.TPR
-op(roc::ROC) = roc.OP
-
 function auc(roc::ROC{T}, FPRstop) where {T}
 	AUC=zero(T)
 	if FPRstop <= 0 || FPRstop >= 1
@@ -80,3 +75,8 @@ function auc(roc::ROC{T}, FPRstop) where {T}
 	end
 	return AUC
 end
+
+auc(curve::ROC) = curve.AUC
+fpr(curve::ROC) = curve.FPR
+tpr(curve::ROC) = curve.TPR
+op(curve::ROC) = curve.OP
