@@ -1,4 +1,4 @@
-module ROC
+module ClassifierMetrics
 
 using Infinity
 using Missings # to use Missings.T
