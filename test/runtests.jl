@@ -33,6 +33,7 @@ add_noise(label::Bool, λ=0.0) = label ? 1 - λ*rand() : λ*rand()
     @test fn(B,0.5) == 1
     @test cm(B,0.5) == ones(2,2)
 
+    L = 200
     labels = rand(Bool, L);
     scores = add_noise.(labels, 0.6)
     B = BinaryMetrics(labels, scores)
@@ -61,6 +62,7 @@ add_noise(label::Bool, λ=0.0) = label ? 1 - λ*rand() : λ*rand()
     MCC = (tp(B,OP).*tn(B,OP).-fp(B,OP).*fn(B,OP))./ # <- determinant of CM
     sqrt.((tp(B,OP).+fp(B,OP)).*(tp(B,OP).+fn(B,OP)).*(tn(B,OP).+fp(B,OP)).*(tn(B,OP).+fn(B,OP)))
     @test mcc(B,OP) == MCC 
+    @test eer(B) == (0.17,101)  
 
   end
 
@@ -77,13 +79,12 @@ add_noise(label::Bool, λ=0.0) = label ? 1 - λ*rand() : λ*rand()
     curve = ROC(B)
     println(curve)
     @test isapprox( auc(curve),       0.834187    , atol = 1e-4) # ROCR 0.8341875
-    @test isapprox( auc(curve, 0.01), 0.000329615 , atol = 1e-4) # ROCR 0.0003296151
-    @test isapprox( auc(curve, 0.1 ), 0.0278062   , atol = 1e-4) # ROCR 0.02780625
 
-    @test op(curve) == curve.OP
+    OP = op(B)
+    @test op(curve) == OP 
     @test auc(curve) == curve.AUC
-    @test fpr(curve) == curve.FPR
-    @test tpr(curve) == curve.TPR
+    @test fpr(curve) == fpr(B,OP)
+    @test tpr(curve) == tpr(B,OP)
 
     # "ROC analysis: web-based calculator for ROC curves' example"
     scores = [1 , 2 , 3 , 4 , 6 , 5 , 7 , 8 , 9 , 10]
@@ -137,6 +138,22 @@ add_noise(label::Bool, λ=0.0) = label ? 1 - λ*rand() : λ*rand()
 
   end
 
+  @testset "testinf DET" begin
+    L = 20
+    labels = rand(Bool, L);
+    scores = add_noise.(labels, 0.6)
+
+    curve = DET(labels, scores)
+    B = BinaryMetrics(labels, scores)
+    curve = DET(B)
+    println(curve)
+
+    OP = op(B)
+    @test op(curve) == OP 
+    @test fpr(curve) == fpr(B,OP)
+    @test tpr(curve) == tpr(B,OP)
+  end
+
   @testset "testing Plots" begin
     # Test ROC
     L = 10
@@ -144,5 +161,9 @@ add_noise(label::Bool, λ=0.0) = label ? 1 - λ*rand() : λ*rand()
     scores = add_noise.(labels, 0.6)
     curve = ROC(labels, scores)
     plot(curve)
+
+    curve = DET(labels, scores)
+    plot(curve)
+
   end
 end

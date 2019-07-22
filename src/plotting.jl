@@ -1,4 +1,5 @@
 @recipe function dummy(curve::ROC)
+  cnt = 1:10
 	ticks = [0.2, 0.4, 0.6, 0.8, 1]
 	xlim := (0,1)
 	ylim := (0,1)
@@ -13,6 +14,13 @@
 		label := ""
 		[0, 1], [0, 1]
 	end
+  EER, idx = eer(curve)
+	@series begin
+		color --> :red
+    seriestype := :scatter
+		label := ""
+    [curve.FPR[idx]], [curve.TPR[idx]]
+	end
 	@series begin
 		curve.FPR, curve.TPR
 	end
@@ -21,8 +29,8 @@ end
 @recipe function dummy(curve::DET)
 	f = x -> sqrt(2) * erfinv(2*x-1)
 	ticks = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 40, 60]
-	xlab := "False Negative Rate (%)"
-	ylab := "False Positive Rate (%)"
+	xlab := "False Positive Rate (%)"
+	ylab := "False Negative Rate (%)"
 	title --> "Detection Error Tradeoff (DET)"
 	legend --> :outerleft
 	ticks --> (f.( ticks ./ 100), string.(ticks))
@@ -30,5 +38,12 @@ end
 	ylim --> (f(0.001), f(0.6))
 	@series begin
 		f.(curve.FPR), f.(curve.FNR)
+	end
+  EER, idx = eer(curve)
+	@series begin
+    seriestype := :scatter
+		color --> :red
+		label := ""
+    [f.(curve.FPR[idx])], [f.(curve.FNR[idx])]
 	end
 end

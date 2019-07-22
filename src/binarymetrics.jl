@@ -27,7 +27,7 @@ end
 
 
 """
-  BinaryMetrics(labels, scores)
+  `BinaryMetrics(labels, scores)`
 
 Create an object to compute various metrics of a binary classifier.
 
@@ -38,10 +38,6 @@ fpr(B,OP)
 
 ```
 See documentation for a comprehensive list of available metrics.
-
-```
-
-The Area Under Curve (AUC) FPR and TPR can be accessed by `auc(roc)`, `fpr(roc)` and `tpr(roc)` respectively.
 
 """
 BinaryMetrics
@@ -61,6 +57,7 @@ export tpr, tnr, fpr, fnr
 export ppv, fdr
 export npv, false_omission_rate, csi
 export acc, f1, mcc
+export eer
 
 is_tp(label, score, OP) =  label && score >= OP 
 is_tn(label, score, OP) = !label && score  < OP 
@@ -96,111 +93,111 @@ for f in [
 end
 
 """
-  tp(B::AbstractBinaryMetric, OP)
+  `tp(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the true positives of `B` at a particular operating point.
 """
 tp
 
 """
-  tn(B::AbstractBinaryMetric, OP)
+  `tn(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the true negatives of `B` at a particular operating point.
 """
 tn
 
 """
-  fp(B::AbstractBinaryMetric, OP)
+  `fp(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the false positives of `B` at a particular operating point.
 """
 fp
 
 """
-  fn(B::AbstractBinaryMetric, OP)
+  `fn(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the false negatives of `B` at a particular operating point.
 """
 fn
 
 """
-  tpr(B::AbstractBinaryMetric, OP)
+  `tpr(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the true positive rate of `B` at a particular operating point.
 """
-tpr(B::AbstractBinaryMetric, OP) = tp(B,OP) ./ positives(B)
+tpr(B::AbstractBinaryMetric, OP=op(B)) = tp(B,OP) ./ positives(B)
 
 """
-  tnr(B::AbstractBinaryMetric, OP)
+  `tnr(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the true negative rate of `B` at a particular operating point.
 """
-tnr(B::AbstractBinaryMetric, OP) = tn(B,OP) ./ negatives(B)
+tnr(B::AbstractBinaryMetric, OP=op(B)) = tn(B,OP) ./ negatives(B)
 
 """
-  fnr(B::AbstractBinaryMetric, OP)
+  `fnr(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the false negative rate of `B` at a particular operating point.
 """
-fnr(B::AbstractBinaryMetric,OP) = fn(B,OP) ./ positives(B)
+fnr(B::AbstractBinaryMetric,OP=op(B)) = fn(B,OP) ./ positives(B)
 
 """
-  fpr(B::AbstractBinaryMetric, OP)
+  `fpr(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the false positive rate of `B` at a particular operating point.
 """
-fpr(B::AbstractBinaryMetric,OP) = fp(B,OP) ./ negatives(B)
+fpr(B::AbstractBinaryMetric,OP=op(B)) =fp(B,OP) ./ negatives(B)
 
 """
-  ppv(B::AbstractBinaryMetric, OP)
+  `ppv(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the positive predictive value (aka precision) of `B` at a particular operating point.
 """
-function ppv(B::AbstractBinaryMetric,OP) 
+function ppv(B::AbstractBinaryMetric,OP=op(B)) 
   TP = tp(B,OP)
   FP = fp(B,OP)
   return TP ./ ( TP .+ FP )
 end
 
 """
-  fdr(B::AbstractBinaryMetric, OP)
+  `fdr(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the false discovery rate of `B` at a particular operating point.
 """
-function fdr(B::AbstractBinaryMetric,OP) 
+function fdr(B::AbstractBinaryMetric,OP=op(B)) 
   TP = tp(B,OP)
   FP = fp(B,OP)
   return FP ./ ( TP .+ FP )
 end
 
 """
-  npv(B::AbstractBinaryMetric, OP)
+  `npv(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the negative predictive value of `B` at a particular operating point.
 """
-function npv(B::AbstractBinaryMetric, OP) 
+function npv(B::AbstractBinaryMetric, OP=op(B)) 
   TN = tn(B,OP)
   FN = fn(B,OP)
   return TN ./ ( TN .+ FN )
 end
 
 """
-  false_omission_rate(B::AbstractBinaryMetric, OP)
+  `false_omission_rate(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the false omission rate of `B` at a particular operating point.
 """
-function false_omission_rate(B::AbstractBinaryMetric, OP) 
+function false_omission_rate(B::AbstractBinaryMetric, OP=op(B)) 
   TN = tn(B,OP)
   FN = fn(B,OP)
   return FN ./ ( TN .+ FN )
 end
 
 """
-  csi(B::AbstractBinaryMetric, OP)
+  `csi(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the critical success index of `B` at a particular operating point.
 """
-function csi(B::AbstractBinaryMetric, OP) 
+function csi(B::AbstractBinaryMetric, OP=op(B)) 
   TP = tp(B,OP)
   FN = fn(B,OP)
   FP = fp(B,OP)
@@ -208,39 +205,39 @@ function csi(B::AbstractBinaryMetric, OP)
 end
 
 """
-  acc(B::AbstractBinaryMetric, OP)
+  `acc(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the accuracy index of `B` at a particular operating point.
 """
-function acc(B::AbstractBinaryMetric, OP) 
+function acc(B::AbstractBinaryMetric, OP=op(B)) 
   TP = tp(B,OP)
   TN = tn(B,OP)
   return (TP + TN) ./ ( length(B) )
 end
 
 """
-  f1(B::AbstractBinaryMetric, OP)
+  `f1(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the F1 score of `B` at a particular operating point.
 """
-function f1(B::AbstractBinaryMetric, OP) 
+function f1(B::AbstractBinaryMetric, OP=op(B)) 
   PPV = ppv(B, OP)
   TPR = tpr(B, OP)
   return 2 .*(PPV .* TPR) ./ ( PPV .+ TPR )
 end
 
 """
-  mcc(B::AbstractBinaryMetric, OP)
+  `mcc(B::AbstractBinaryMetric, OP=op(B))`
 
 Returns the Matthews correlation coefficient of `B` at a particular operating point.
 """
-function mcc(B::AbstractBinaryMetric, OP) 
+function mcc(B::AbstractBinaryMetric, OP=op(B)) 
   TP, FP, FN, TN = tp(B,OP), fp(B,OP), fn(B,OP), tn(B,OP)
   return  @. (TP*TN-FP*FN)/sqrt((TP+FP)*(TP+FN)*(TN+FP)*(TN+FN))
 end
 
 """
-cm(B::AbstractBinaryMetric, OP::Real)
+  `cm(B::AbstractBinaryMetric, OP::Real)`
 
 Returns the confusion matrix of `B` at a given operating point.
 The matrix is defined as follow:
@@ -252,7 +249,7 @@ cm(B::AbstractBinaryMetric, OP::Real) =  [ tp(B,OP) fp(B,OP);
                                           fn(B,OP) tn(B,OP) ]
 
 """
-cm(B::AbstractBinaryMetric, OP::Array)
+  `cm(B::AbstractBinaryMetric, OP::Array)`
 
 Returns the confusion matrix of `B`. The output is conveniently given as:
 
@@ -265,7 +262,7 @@ cm(B::AbstractBinaryMetric, OP::AbstractArray) =  (tp(B,OP), fp(B,OP),
 export op
 
 """
-op(B::AbstractBinaryMetric)
+  `op(B::AbstractBinaryMetric)`
 
 Returns significant operating points of `B`.
 """
@@ -277,4 +274,38 @@ function op(B::AbstractBinaryMetric)
 
   return OP
 
+end
+
+
+"""
+  `eer(FPR::Array,FNR::Array) -> (EER, index)`
+
+Returns the Equal Error Rate (EER) from the intersection of the False Positive rate (must be monotonically increasing) and the False Negative Rate (must be monotonically increasing) and the index of this intersection.
+
+"""
+function eer(FPR,FNR)
+  if length(FPR) != length(FNR)
+    throw(ErrorException("FPR and FNR must have the same length."))
+  end
+  if !issorted(FPR) 
+    throw(ErrorException("FPR must be monotonically decreasing."))
+  end
+  if !issorted(FNR,rev=true)
+    throw(ErrorException("FNR must be monotonically increasing."))
+  end
+  idx = findfirst(FPR .>= FNR)
+  EER = (FPR[idx]+FNR[idx])/2
+  return EER, idx 
+end
+
+"""
+  `eer(B::AbstractBinaryMetric)`
+
+Returns the Equal Error Rate of `B`. 
+"""
+function eer(B::AbstractBinaryMetric)
+  OP = op(B)
+  FPR = fpr(B,OP)
+  FNR = fnr(B,OP)
+  eer(FPR,FNR)
 end

@@ -30,4 +30,3 @@ plot!(roc_plot,roc_bad, label="bad")
 det_plot = plot(det_good, label="good");
 plot!(det_plot,det_bad, label="bad")
 
-#savefig("rocs.png")
