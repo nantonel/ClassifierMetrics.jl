@@ -22,7 +22,7 @@
     [curve.FPR[idx]], [curve.TPR[idx]]
 	end
 	@series begin
-		curve.FPR, curve.TPR
+    [curve.FPR[1];curve.FPR], [0;curve.TPR]
 	end
 end
 
