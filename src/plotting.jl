@@ -36,8 +36,11 @@ end
 	ticks --> (f.( ticks ./ 100), string.(ticks))
 	xlim --> (f(0.001), f(0.6))
 	ylim --> (f(0.001), f(0.6))
-	@series begin
-		f.(curve.FPR), f.(curve.FNR)
+	@series begin # this is just to get the same colors with ROC
+		color --> :black
+		linestyle --> :dash
+		label := ""
+		[0, 0], [0, 0]
 	end
   EER, idx = eer(curve)
 	@series begin
@@ -45,5 +48,8 @@ end
 		color --> :red
 		label := ""
     [f.(curve.FPR[idx])], [f.(curve.FNR[idx])]
+	end
+	@series begin
+		f.(curve.FPR), f.(curve.FNR)
 	end
 end
