@@ -8,12 +8,10 @@ struct BinaryMetrics{T <: Real} <: AbstractBinaryMetric
 
   function BinaryMetrics(labels::AbstractVector, scores::AbstractVector)
     L = length(labels)
+    scores = float(scores)
 
     if length(scores) != L
       throw(ErrorException("scores and labels should have the same length."))
-    end
-    if !all(0 .<= scores .<= 1)
-      throw(ErrorException("scores must be between 0 and 1"))
     end
     if sum(labels .== true) + sum(labels.==false) != L
       throw(ErrorException("Labels must be either `true` or `false`  (`0` or `1`)"))
@@ -269,8 +267,6 @@ Returns significant operating points of `B`.
 function op(B::AbstractBinaryMetric)
 
   OP = sort(unique(B.scores); rev=true) #threshold
-  if OP[1] != 1.0 pushfirst!(OP,1.0) end
-  if OP[end] != 0 push!(OP,0.0) end
 
   return OP
 
