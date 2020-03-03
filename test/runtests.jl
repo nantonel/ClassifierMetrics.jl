@@ -69,7 +69,7 @@ add_noise(label::Bool, λ=0.0) = label ? 1 - λ*rand() : λ*rand()
     include("roc_tests.jl")
   end
 
-  @testset "testinf DET" begin
+  @testset "testing DET" begin
     L = 20
     labels = rand(Bool, L);
     scores = add_noise.(labels, 0.6)
@@ -85,12 +85,31 @@ add_noise(label::Bool, λ=0.0) = label ? 1 - λ*rand() : λ*rand()
     @test tpr(curve) == tpr(B,OP)
   end
 
+  @testset "testing PR" begin
+    L = 20
+    labels = rand(Bool, L);
+    scores = add_noise.(labels, 0.6)
+
+    curve = PR(labels, scores)
+    B = BinaryMetrics(labels, scores)
+    curve = PR(B)
+    println(curve)
+
+    OP = op(B)
+    @test op(curve) == OP 
+    @test precision(curve) == precision(B,OP)
+    @test recall(curve) == tpr(B,OP)
+  end
+
   @testset "testing Plots" begin
     # Test ROC
     L = 10
     labels = rand(Bool, L);
     scores = add_noise.(labels, 0.6)
     curve = ROC(labels, scores)
+    plot(curve)
+
+    curve = PR(labels, scores)
     plot(curve)
 
     curve = DET(labels, scores)

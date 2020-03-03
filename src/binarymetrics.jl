@@ -51,7 +51,7 @@ end
 
 export positives, negatives
 export tp, tn, fp, fn, cm 
-export tpr, tnr, fpr, fnr
+export tpr, recall, tnr, fpr, fnr
 export ppv, fdr
 export npv, false_omission_rate, csi
 export acc, f1, mcc
@@ -121,9 +121,10 @@ fn
 """
   `tpr(B::AbstractBinaryMetric, OP=op(B))`
 
-Returns the true positive rate of `B` at a particular operating point.
+Returns the true positive rate (aka recall) of `B` at a particular operating point.
 """
 tpr(B::AbstractBinaryMetric, OP=op(B)) = tp(B,OP) ./ positives(B)
+recall = tpr
 
 """
   `tnr(B::AbstractBinaryMetric, OP=op(B))`
@@ -156,6 +157,9 @@ function ppv(B::AbstractBinaryMetric,OP=op(B))
   FP = fp(B,OP)
   return TP ./ ( TP .+ FP )
 end
+
+import Base: precision
+precision(B::AbstractBinaryMetric,OP=op(B)) = ppv(B,OP)
 
 """
   `fdr(B::AbstractBinaryMetric, OP=op(B))`

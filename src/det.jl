@@ -21,7 +21,7 @@ end
 Generates data for plotting a Detection Error Tradeoff (DET) curve.
 
 * `labels` must be a boolean array e.g. either containing `true`,`false` or `0`,`1`.
-* `scores` must be an array with the same length of `labels` containing the scores of the binary classifier. Scores must be normalized such that they are between 0 and 1.
+* `scores` must be an array with the same length of `labels` containing the scores of the binary classifier.
 
 You can generate a plot automatically using the following commands:
 ```julia

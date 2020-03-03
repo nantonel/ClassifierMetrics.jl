@@ -15,18 +15,28 @@ bad  = add_noise.(labels, 0.98)
 roc_good = ROC(labels, good)
 roc_bad  = ROC(labels,  bad)
 
+pr_bad  = PR(labels,  bad)
+pr_good  = PR(labels,  good)
+
 det_bad  = DET(labels,  bad)
 det_good  = DET(labels,  good)
 
-println("AUC (good detector): $(auc(roc_good)) ")
-println("AUC (bad  detector): $(auc(roc_bad )) ")
+println("ROCAUC (good detector): $(auc(roc_good)) ")
+println("ROCAUC (bad  detector): $(auc(roc_bad )) ")
+
+println("PRAUC (good detector): $(auc(pr_good)) ")
+println("PRAUC (bad  detector): $(auc(pr_bad )) ")
 
 using Plots
 gr()
 
 roc_plot = plot(roc_good, label="good");
-plot!(roc_plot,roc_bad, label="bad")
+plot!(roc_plot,roc_bad, label="bad", legend=:bottomright)
 
-det_plot = plot(det_good, label="good");
-plot!(det_plot,det_bad, label="bad")
+pr_plot = plot(pr_good);
+plot!(pr_plot,pr_bad, legend=false)
 
+det_plot = plot(det_good);
+plot!(det_plot,det_bad, legend=false)
+
+plot(roc_plot, pr_plot, det_plot)

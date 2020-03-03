@@ -1,5 +1,4 @@
 @recipe function dummy(curve::ROC)
-  cnt = 1:10
 	ticks = [0.2, 0.4, 0.6, 0.8, 1]
 	xlim := (0,1)
 	ylim := (0,1)
@@ -23,6 +22,33 @@
 	end
 	@series begin
     [curve.FPR[1];curve.FPR], [0;curve.TPR]
+	end
+end
+
+@recipe function dummy(curve::PR)
+	ticks = [0.2, 0.4, 0.6, 0.8, 1]
+	xlim := (0,1)
+	ylim := (0,1)
+	xlab := "Recall (%)"
+	ylab := "Precision (%)"
+	title --> "Precision Recall (PR)"
+	legend --> :outerleft
+	ticks --> (ticks, string.(ticks.*100))
+	@series begin # this is just to get the same colors with ROC
+		color --> :black
+		linestyle --> :dash
+		label := ""
+		[0, 0], [0, 0]
+	end
+  EER, idx = eer(curve)
+	@series begin
+		color --> :red
+    seriestype := :scatter
+		label := ""
+    [curve.recall[idx]], [curve.precision[idx]]
+	end
+	@series begin
+    curve.recall, curve.precision
 	end
 end
 
