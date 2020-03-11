@@ -12,7 +12,7 @@ struct ROC{T <: Real} <: AbstractBinaryMetric
     OP = op(B)
     FPR = fpr(B, OP)
     TPR = tpr(B, OP)
-    AUC = get_auc(FPR, TPR)
+    AUC = get_auc([0.0;FPR], [0.0;TPR])
     new{eltype(FPR)}(B.labels, B.scores, AUC, FPR, TPR, OP)
   end
 end

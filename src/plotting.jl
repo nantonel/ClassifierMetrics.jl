@@ -21,7 +21,7 @@
     [curve.FPR[idx]], [curve.TPR[idx]]
 	end
 	@series begin
-    [curve.FPR[1];curve.FPR], [0;curve.TPR]
+    [0.0;curve.FPR], [0.0;curve.TPR]
 	end
 end
 
@@ -48,7 +48,7 @@ end
     [curve.recall[idx]], [curve.precision[idx]]
 	end
 	@series begin
-    curve.recall, curve.precision
+    [0.0;curve.recall], [1.0;curve.precision]
 	end
 end
 

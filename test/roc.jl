@@ -1,14 +1,25 @@
 # comparing with ROCR
-data = CSV.read(joinpath(@__DIR__, "data", "ROCRdata.csv"))
+data = CSV.read(joinpath(@__DIR__, "data", "data.csv"))
+# comparing with sklearn
+roc_sklearn = CSV.read(joinpath(@__DIR__, "data", "roc_sklearn.csv"))
+
 scores = data.predictions
 labels = data.labels
+
+fpr_sklearn = roc_sklearn.fpr
+tpr_sklearn = roc_sklearn.tpr
+op_sklearn = roc_sklearn.op
 
 # testing constructors
 curve = ROC(labels, scores)
 B = BinaryMetrics(labels, scores)
 curve = ROC(B)
 println(curve)
-@test isapprox( auc(curve),       0.834187    , atol = 1e-4) # ROCR 0.8341875
+@test isapprox( auc(curve),       0.834187    , atol = 1e-4) # AUCROCR
+@test isapprox( auc(curve),       0.8341875188423276 ) # sklearn AUCROC
+@test norm(fpr_sklearn[2:end]-fpr(curve)) < 1e-5
+@test norm(tpr_sklearn[2:end]-tpr(curve)) < 1e-5
+@test norm(op_sklearn[2:end]-op(curve)) < 1e-5
 
 OP = op(B)
 @test op(curve) == OP 

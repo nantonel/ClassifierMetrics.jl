@@ -55,7 +55,7 @@ export tpr, recall, tnr, fpr, fnr
 export ppv, fdr
 export npv, false_omission_rate, csi
 export acc, f1, mcc
-export eer, fpr_at_tpr
+export eer, fpr_at_tpr, tpr_at_fpr
 
 is_tp(label, score, OP) =  label && score >= OP 
 is_tn(label, score, OP) = !label && score  < OP 
@@ -313,9 +313,19 @@ end
 """
   `fpr_at_tpr(B::AbstractBinaryMetric; tpr_at=0.95)`
 
-Returns the false positive rate of `B` when the true positive rate is at `tpr_at`. 
+Returns the false positive rate of `B` when the true positive rate is at `tpr_at` and the corresponding operating point.
 """
 function fpr_at_tpr(B::AbstractBinaryMetric, tpr_at=0.95)
   idx = findfirst(tpr(B) .>= tpr_at)
-  return fpr(B)[idx]
+  return fpr(B)[idx], op(B)[idx]
+end
+
+"""
+  `tpr_at_fpr(B::AbstractBinaryMetric; fpr_at=0.05)`
+
+Returns the true positive rate of `B` when the false positive rate is at `tpr_at` and the corresponding operating point.
+"""
+function tpr_at_fpr(B::AbstractBinaryMetric, fpr_at=0.05)
+  idx = findfirst(fpr(B) .>= fpr_at)
+  return tpr(B)[idx], op(B)[idx]
 end

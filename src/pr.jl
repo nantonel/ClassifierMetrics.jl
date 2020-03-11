@@ -12,7 +12,7 @@ struct PR{T <: Real} <: AbstractBinaryMetric
     OP = op(B)
     p = precision(B, OP)
     r = recall(B,OP)
-    AUC = get_auc(r, p)
+    AUC = get_auc([0.0;r], [1.0;p])
     new{eltype(p)}(B.labels, B.scores, AUC, p, r, OP)
   end
 end
