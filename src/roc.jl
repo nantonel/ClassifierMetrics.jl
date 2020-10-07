@@ -49,3 +49,7 @@ auc(curve::ROC) = curve.AUC
 fpr(curve::ROC) = curve.FPR
 tpr(curve::ROC) = curve.TPR
 op(curve::ROC) = curve.OP
+
+function get_curve(curve::ROC)
+  return [0.0;curve.FPR], [0.0;curve.TPR]
+end

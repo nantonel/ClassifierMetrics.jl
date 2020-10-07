@@ -37,3 +37,9 @@ DET(B::BinaryMetrics) = DET(B.labels, B.scores)
 fpr(curve::DET) = curve.FPR
 fnr(curve::DET) = curve.FNR
 op(curve::DET) = curve.OP
+
+
+det_axis = x -> sqrt(2) * erfinv(2*x-1)
+function get_curve(curve::DET)
+	return det_axis.(curve.FPR), det_axis.(curve.FNR)
+end

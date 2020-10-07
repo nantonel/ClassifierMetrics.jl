@@ -1,69 +1,71 @@
 @recipe function dummy(curve::ROC)
+  x, y = get_curve(curve)
 	ticks = [0.2, 0.4, 0.6, 0.8, 1]
-	xlim := (0,1)
-	ylim := (0,1)
-	xlab := "False Positive Rate (%)"
-	ylab := "True Positive Rate (%)"
+	xlims := (0,1)
+	ylims := (0,1)
+	xguide := "False Positive Rate (%)"
+	yguide := "True Positive Rate (%)"
 	title --> "Receiver Operator Characteristic (ROC)"
 	legend --> :outerleft
 	ticks --> (ticks, string.(ticks.*100))
 	@series begin
-		color --> :black
+		seriescolor --> :black
 		linestyle --> :dash
 		label := ""
 		[0, 1], [0, 1]
 	end
   EER, idx = eer(curve)
 	@series begin
-		color --> :red
+		seriescolor --> :red
     seriestype := :scatter
 		label := ""
-    [curve.FPR[idx]], [curve.TPR[idx]]
+    [x[idx+1]], [y[idx+1]]
 	end
 	@series begin
-    [0.0;curve.FPR], [0.0;curve.TPR]
+    x, y 
 	end
 end
 
 @recipe function dummy(curve::PR)
+  x, y = get_curve(curve)
 	ticks = [0.2, 0.4, 0.6, 0.8, 1]
-	xlim := (0,1)
-	ylim := (0,1)
-	xlab := "Recall (%)"
-	ylab := "Precision (%)"
+	xlims := (0,1)
+	ylims := (0,1)
+	xguide := "Recall (%)"
+	yguide := "Precision (%)"
 	title --> "Precision Recall (PR)"
 	legend --> :outerleft
 	ticks --> (ticks, string.(ticks.*100))
 	@series begin # this is just to get the same colors with ROC
-		color --> :black
+		seriescolor --> :black
 		linestyle --> :dash
 		label := ""
 		[0, 0], [0, 0]
 	end
   EER, idx = eer(curve)
 	@series begin
-		color --> :red
+		seriescolor --> :red
     seriestype := :scatter
 		label := ""
-    [curve.recall[idx]], [curve.precision[idx]]
+    [x[idx+1]], [y[idx+1]]
 	end
 	@series begin
-    [0.0;curve.recall], [1.0;curve.precision]
+    x, y
 	end
 end
 
 @recipe function dummy(curve::DET)
-	f = x -> sqrt(2) * erfinv(2*x-1)
+  x, y = get_curve(curve)
 	ticks = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 40, 60]
-	xlab := "False Positive Rate (%)"
-	ylab := "False Negative Rate (%)"
+	xguide := "False Positive Rate (%)"
+	yguide := "False Negative Rate (%)"
 	title --> "Detection Error Tradeoff (DET)"
 	legend --> :outerleft
-	ticks --> (f.( ticks ./ 100), string.(ticks))
-	xlim --> (f(0.001), f(0.6))
-	ylim --> (f(0.001), f(0.6))
+	ticks --> (det_axis.( ticks ./ 100), string.(ticks))
+	xlims --> (det_axis(0.001), det_axis(0.6))
+	ylims --> (det_axis(0.001), det_axis(0.6))
 	@series begin # this is just to get the same colors with ROC
-		color --> :black
+		seriescolor --> :black
 		linestyle --> :dash
 		label := ""
 		[0, 0], [0, 0]
@@ -71,11 +73,11 @@ end
   EER, idx = eer(curve)
 	@series begin
     seriestype := :scatter
-		color --> :red
+		seriescolor --> :red
 		label := ""
-    [f.(curve.FPR[idx])], [f.(curve.FNR[idx])]
+    [x[idx]], [y[idx]]
 	end
 	@series begin
-		f.(curve.FPR), f.(curve.FNR)
+		x, y
 	end
 end

@@ -49,3 +49,6 @@ ppv(curve::PR) = curve.precision
 tpr(curve::PR) = curve.recall
 op(curve::PR) = curve.OP
 
+function get_curve(curve::PR)
+  return [0.0;curve.recall], [1.0;curve.precision]
+end
